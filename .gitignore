@@ -1,0 +1,51 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+sei
+node_modules
+.vscode
+.env
+novodotenv.txt
+start api server.bat
+node_siews.rar
+node_siews
+cert
+cert-kinghost
+cert-salthomol
+cert-checkin-siegestao
+cert-sie-app-br
+DocCheckin
+doccheckin
+uploads
+uploadTemporario
+docs
+assets
+
+# Testes de desenvolvimento
+coverage
+tests
+jest.config.js
+query.log
