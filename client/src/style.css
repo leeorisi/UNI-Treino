@@ -1,0 +1,279 @@
+/* reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --brand-blue: #1A73E8;
+  --brand-blue-dark: #1558b0;
+  --black: #000000;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --bg-white: #ffffff;
+  --border-light: #e5e7eb;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+}
+
+/* 
+   navbar
+ */
+
+.navbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 60px;
+}
+
+.navbar-logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.unitreino-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unifor-img {
+  object-fit: contain;
+  display: block;
+}
+
+.logo-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.logo-uni {
+  color: var(--brand-blue);
+  font-weight: 700;
+}
+
+.logo-treino {
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar-link {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+}
+
+.navbar-link:hover {
+  color: var(--text-primary);
+}
+
+.btn-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  background: var(--black);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.btn-login:hover {
+  background: #222;
+}
+
+/* notificações (estado: logado) */
+.navbar-notif-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s;
+}
+
+.navbar-notif-btn:hover {
+  background: #f3f4f6;
+  color: var(--text-primary);
+}
+
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-logout {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+  padding: 0;
+}
+
+.btn-logout:hover {
+  color: var(--text-primary);
+}
+
+/* 
+   home
+*/
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.home-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+}
+
+.home-title {
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.home-title span {
+  color: var(--text-primary);
+}
+
+.home-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.btn-start-chat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  background: var(--black);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-start-chat:hover {
+  background: #222;
+}
+
+.btn-start-chat:active {
+  transform: scale(0.98);
+}
+
+/* 
+  mobile
+ */
+
+@media (max-width: 640px) {
+  .navbar-inner {
+    padding: 0 16px;
+  }
+
+  .navbar-link {
+    display: none;
+  }
+
+  .home-title {
+    font-size: 1.9rem;
+  }
+
+  .home-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .btn-start-chat {
+    width: 100%;
+    max-width: 320px;
+  }
+}
