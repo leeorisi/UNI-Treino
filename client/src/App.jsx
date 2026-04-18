@@ -1,26 +1,26 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import { AuthProvider } from './context/AuthContext';
+import Home    from './pages/Home';
+import NovoChat from './pages/NovoChat';
+import Chat    from './pages/Chat';
 
-/**
- * App principal.
- * Novas rotas serão adicionadas aqui conforme as telas forem finalizadas pela UX.
- */
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Home */}
-        <Route path="/" element={<Home />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/"           element={<Home />} />
+          <Route path="/novo-chat"  element={<NovoChat />} />
+          <Route path="/chat/:id"   element={<Chat />} />
 
-        {/* Rotas futuras — descomentar conforme as telas ficarem prontas */}
-        {/* <Route path="/login"         element={<Login />} /> */}
-        {/* <Route path="/cadastro"      element={<Cadastro />} /> */}
-        {/* <Route path="/chat"          element={<Chat />} /> */}
-        {/* <Route path="/chat/:id"      element={<Chat />} /> */}
-        {/* <Route path="/perfil"        element={<Perfil />} /> */}
-        {/* <Route path="/notificacoes"  element={<Notificacoes />} /> */}
-      </Routes>
-    </BrowserRouter>
+          {/* Rotas futuras */}
+          {/* <Route path="/login"         element={<Login />} /> */}
+          {/* <Route path="/cadastro"      element={<Cadastro />} /> */}
+          {/* <Route path="/perfil"        element={<Perfil />} /> */}
+          {/* <Route path="/notificacoes"  element={<Notificacoes />} /> */}
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
