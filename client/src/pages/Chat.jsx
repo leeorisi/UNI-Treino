@@ -1,22 +1,27 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
-import ChatInput from '../components/ChatInput';
-import ChatMessage from '../components/ChatMessage';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect, useRef } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import ChatInput from "../components/ChatInput";
+import ChatMessage from "../components/ChatMessage";
+import { useAuth } from "../context/AuthContext";
+import { axiosInstance } from "../../lib/api";
 
 const MOCK_TREINOS = [
-  { id: '1', titulo: 'Upper completo' },
-  { id: '2', titulo: 'Costa e ombro' },
-  { id: '3', titulo: 'Legday completo' },
-  { id: '4', titulo: 'Peito e tríceps' },
+  { id: "1", titulo: "Upper completo" },
+  { id: "2", titulo: "Costa e ombro" },
+  { id: "3", titulo: "Legday completo" },
+  { id: "4", titulo: "Peito e tríceps" },
 ];
 
 /** Ícone de parar geração (quadrado) — RF06.3 */
 function StopButton({ onClick }) {
   return (
-    <button className="stop-generation-btn" onClick={onClick} aria-label="Parar geração">
+    <button
+      className="stop-generation-btn"
+      onClick={onClick}
+      aria-label="Parar geração"
+    >
       <span className="stop-square" aria-hidden="true" />
       Parar geração
     </button>
@@ -39,7 +44,7 @@ function Chat() {
 
   /* scroll automático ao receber nova mensagem */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   /* carrega histórico existente OU processa primeira mensagem vinda de NovoChat */
@@ -49,12 +54,12 @@ function Chat() {
     if (firstMessage) {
       // Veio de NovoChat com uma mensagem já digitada
       sendMessage(firstMessage);
-    } else if (id && id !== 'novo') {
+    } else if (id && id !== "novo") {
       // Carrega últimas 10 mensagens — RF06.5
       // TODO: GET /api/conversas/:id/mensagens?limit=10
       // Por enquanto sem mensagens
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Limpa timers ao desmontar */
@@ -72,7 +77,11 @@ function Chat() {
   async function sendMessage(text, retryBotId = null) {
     // Adiciona mensagem do usuário (se não for retry)
     if (!retryBotId) {
-      const userMsg = { id: `user-${Date.now()}`, tipo: 'usuario', conteudo: text };
+      const userMsg = {
+        id: `user-${Date.now()}`,
+        tipo: "usuario",
+        conteudo: text,
+      };
       setMessages((prev) => [...prev, userMsg]);
     }
 
@@ -83,10 +92,15 @@ function Chat() {
       const already = prev.find((m) => m.id === botId);
       if (already) {
         return prev.map((m) =>
-          m.id === botId ? { ...m, conteudo: '', loading: true, error: false } : m
+          m.id === botId
+            ? { ...m, conteudo: "", loading: true, error: false }
+            : m,
         );
       }
-      return [...prev, { id: botId, tipo: 'bot', conteudo: '', loading: true, error: false }];
+      return [
+        ...prev,
+        { id: botId, tipo: "bot", conteudo: "", loading: true, error: false },
+      ];
     });
 
     setIsGenerating(true);
@@ -135,16 +149,20 @@ function Chat() {
 
       // ── Simulação local (remover quando o backend estiver pronto) ──
       await simulateStreaming(botId, text);
-
     } catch (err) {
-      const isAbort = err.name === 'AbortError';
+      const isAbort = err.name === "AbortError";
       if (!isAbort) {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === botId
-              ? { ...m, loading: false, error: true, onRetry: () => sendMessage(text, botId) }
-              : m
-          )
+              ? {
+                  ...m,
+                  loading: false,
+                  error: true,
+                  onRetry: () => sendMessage(text, botId),
+                }
+              : m,
+          ),
         );
       }
     } finally {
@@ -155,24 +173,31 @@ function Chat() {
 
   /** Simula resposta progressiva (remover ao integrar o backend) */
   async function simulateStreaming(botId, userText) {
-    const response =
-      'Esta é uma resposta simulada do assistente UniTreino. ' +
-      'Aqui aparecerá a resposta real da IA (Gemini) quando o backend estiver integrado.\n\n' +
-      'Para criar um treino, envie uma mensagem como:\n' +
-      '• Crie um treino de peito e tríceps\n' +
-      '• Monte um treino de costas para iniciante\n' +
-      '• Qual o melhor aquecimento para pernas?';
+    const response = await axiosInstance.get("/v1/enviarMensagem", {});
 
-    const words = response.split(' ');
-    let accumulated = '';
+    console.log("Resposta:");
+    console.log(response);
+    
+    return;
+
+    const responsea =
+      "Esta é uma resposta simulada do assistente UniTreino. " +
+      "Aqui aparecerá a resposta real da IA (Gemini) quando o backend estiver integrado.\n\n" +
+      "Para criar um treino, envie uma mensagem como:\n" +
+      "• Crie um treino de peito e tríceps\n" +
+      "• Monte um treino de costas para iniciante\n" +
+      "• Qual o melhor aquecimento para pernas?";
+
+    const words = response.split(" ");
+    let accumulated = "";
 
     for (const word of words) {
       await new Promise((r) => setTimeout(r, 40));
-      accumulated += (accumulated ? ' ' : '') + word;
+      accumulated += (accumulated ? " " : "") + word;
       setMessages((prev) =>
         prev.map((m) =>
-          m.id === botId ? { ...m, conteudo: accumulated, loading: false } : m
-        )
+          m.id === botId ? { ...m, conteudo: accumulated, loading: false } : m,
+        ),
       );
     }
   }
@@ -184,10 +209,14 @@ function Chat() {
     // Marca a última mensagem do bot como interrompida
     setMessages((prev) =>
       prev.map((m, i) =>
-        i === prev.length - 1 && m.tipo === 'bot' && m.loading
-          ? { ...m, loading: false, conteudo: m.conteudo + ' [geração interrompida]' }
-          : m
-      )
+        i === prev.length - 1 && m.tipo === "bot" && m.loading
+          ? {
+              ...m,
+              loading: false,
+              conteudo: m.conteudo + " [geração interrompida]",
+            }
+          : m,
+      ),
     );
   }
 
@@ -215,7 +244,11 @@ function Chat() {
 
         {/* Área de mensagens + input */}
         <main className="chat-main" aria-label="Conversa">
-          <div className="chat-messages" aria-live="polite" aria-label="Mensagens">
+          <div
+            className="chat-messages"
+            aria-live="polite"
+            aria-label="Mensagens"
+          >
             {messages.map((msg) => (
               <ChatMessage key={msg.id} message={msg} />
             ))}

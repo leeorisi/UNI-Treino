@@ -1,10 +1,12 @@
-import Logo from './Logo';
+import Logo from "./Logo";
 
 /* ── Indicador de loading (três pontos pulsando) — RF06.1 ── */
 function TypingIndicator() {
   return (
     <div className="typing-indicator" aria-label="Assistente digitando">
-      <span /><span /><span />
+      <span />
+      <span />
+      <span />
     </div>
   );
 }
@@ -12,9 +14,21 @@ function TypingIndicator() {
 /* ── Botão de tentar novamente — RF06.6 ── */
 function RetryButton({ onRetry }) {
   return (
-    <button className="message-retry-btn" onClick={onRetry} aria-label="Tentar novamente">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <button
+      className="message-retry-btn"
+      onClick={onRetry}
+      aria-label="Tentar novamente"
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
         <polyline points="1 4 1 10 7 10" />
         <path d="M3.51 15a9 9 0 1 0 .49-3.68" />
       </svg>
@@ -28,7 +42,7 @@ function RetryButton({ onRetry }) {
  * Para markdown completo, instalar react-markdown futuramente.
  */
 function BotText({ text }) {
-  const lines = text.split('\n');
+  const lines = text.split("\n");
   const elements = [];
   let listBuffer = [];
 
@@ -39,7 +53,7 @@ function BotText({ text }) {
           {listBuffer.map((item, i) => (
             <li key={i}>{item}</li>
           ))}
-        </ul>
+        </ul>,
       );
       listBuffer = [];
     }
@@ -53,10 +67,14 @@ function BotText({ text }) {
       listBuffer.push(bulletMatch ? bulletMatch[1] : numberedMatch[1]);
     } else {
       flushList();
-      if (line.trim() === '') {
+      if (line.trim() === "") {
         elements.push(<br key={`br-${i}`} />);
       } else {
-        elements.push(<p key={`p-${i}`} className="message-p">{line}</p>);
+        elements.push(
+          <p key={`p-${i}`} className="message-p">
+            {line}
+          </p>,
+        );
       }
     }
   });
@@ -79,14 +97,12 @@ function BotText({ text }) {
  */
 function ChatMessage({ message }) {
   const { tipo, conteudo, loading, error, onRetry } = message;
-  const isUser = tipo === 'usuario';
+  const isUser = tipo === "usuario";
 
   if (isUser) {
     return (
       <div className="message message--user">
-        <div className="message-bubble message-bubble--user">
-          {conteudo}
-        </div>
+        <div className="message-bubble message-bubble--user">{conteudo}</div>
       </div>
     );
   }
