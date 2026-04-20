@@ -27,7 +27,6 @@ dist-ssr
 sei
 node_modules
 .vscode
-.env
 novodotenv.txt
 start api server.bat
 node_siews.rar
@@ -37,12 +36,9 @@ cert-kinghost
 cert-salthomol
 cert-checkin-siegestao
 cert-sie-app-br
-DocCheckin
-doccheckin
 uploads
 uploadTemporario
 docs
-assets
 
 # Testes de desenvolvimento
 coverage
