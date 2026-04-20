@@ -1,4 +1,4 @@
-import uniforLogo from "C:\\Users\\Pedro\\Documents\\GitHub\\UniTreino\\client\\assets\\logounifor.png";
+import uniforLogo from '../assets/logounifor.png';
 
 function Logo({ size = 32 }) {
   return (

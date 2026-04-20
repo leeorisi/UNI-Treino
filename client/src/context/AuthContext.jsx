@@ -1,42 +1,52 @@
-import { createContext, useContext, useState } from 'react';
+/**
+ * AuthContext — wrapper fino sobre o configStore (Zustand).
+ *
+ * O configStore já persiste token e usuario no localStorage.
+ * Este context existe apenas para manter a interface que os componentes
+ * já usam (isLoggedIn, user, login, logout) sem precisar expor o Zustand
+ * diretamente em todos os lugares.
+ */
+import { createContext } from 'react';
+import { useConfigStore } from '../../store/configStore';
+import { api } from '../../lib/api';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem('unitreino_user');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
+  return <AuthContext.Provider value={null}>{children}</AuthContext.Provider>;
+}
 
-  function login(userData, token) {
-    localStorage.setItem('unitreino_token', token);
-    localStorage.setItem('unitreino_user', JSON.stringify(userData));
-    setUser(userData);
+/**
+ * Hook de autenticação.
+ * Lê token e usuario do configStore.
+ */
+export function useAuth() {
+  const { token, usuario, setToken, setUsuario, clearAll } = useConfigStore();
+
+  /**
+   * Chama POST /v1/login, salva token no store.
+   *
+   * TODO (backend): implementar validação real + retornar { token, usuario }
+   */
+  async function login(email, senha) {
+    const response = await api.post('/v1/login', { email, senha });
+    const novoToken = response.data?.token ?? response.data;
+    setToken(novoToken);
+    if (response.data?.usuario) {
+      setUsuario(response.data.usuario);
+    }
+    return novoToken;
   }
 
   function logout() {
-    localStorage.removeItem('unitreino_token');
-    localStorage.removeItem('unitreino_user');
-    setUser(null);
+    clearAll();
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoggedIn: !!user,
-        token: localStorage.getItem('unitreino_token'),
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return {
+    user: usuario,
+    isLoggedIn: !!token,
+    token,
+    login,
+    logout,
+  };
 }
-
-export const useAuth = () => useContext(AuthContext);
