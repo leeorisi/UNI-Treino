@@ -39,16 +39,16 @@ function NovoChat() {
       <Navbar onMobileMenuClick={() => setMobileSidebarOpen(true)} />
 
       <div className="novo-chat-body">
-        {/* Sidebar só aparece se logado */}
+        {}
         {isLoggedIn && (
           <>
-            {/* Desktop — sidebar expandida por padrão no NovoChat */}
+            {}
             <Sidebar
               collapsed={false}
               treinos={MOCK_TREINOS}
             />
 
-            {/* Mobile — drawer */}
+            {}
             <Sidebar
               mobileOpen={mobileSidebarOpen}
               onMobileClose={() => setMobileSidebarOpen(false)}
@@ -59,12 +59,12 @@ function NovoChat() {
 
         {/* Área central */}
         <main className="novo-chat-main" aria-label="Novo chat">
-          {/* Logo grande centralizada */}
+          {}
           <div className="novo-chat-logo-area" aria-hidden="true">
             <Logo size={64} />
           </div>
 
-          {/* Input centralizado no desktop, fixo no rodapé no mobile */}
+          {}
           <div className="novo-chat-input-area">
             <ChatInput onSend={handleFirstMessage} />
           </div>

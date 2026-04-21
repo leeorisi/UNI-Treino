@@ -1,40 +1,63 @@
 /**
  * Padrão Observer para notificações do UniTreino.
- * NotificationService age como o "Subject" (Publisher).
- * Qualquer componente que chamar useNotifications() torna-se um "Observer".
+ *
+ * NotificationService = Subject (Publisher)
+ * useNotifications()  = Observer (qualquer componente que assinar)
  */
 import { useState, useEffect } from 'react';
 
-// singleton
+// ── Notificações mock para desenvolvimento ──────────────────────────────────
+const MOCK_NOTIFICACOES = [
+  {
+    id: 1,
+    titulo: 'Academia Unifor',
+    mensagem: 'Academia está em manutenção, portanto hoje estamos fechados.',
+    tipo: 'info',
+    lida: false,
+    data_envio: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    titulo: 'Academia Unifor',
+    mensagem: 'Lembrete: seu treino de Upper está agendado para hoje.',
+    tipo: 'treino',
+    lida: false,
+    data_envio: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    titulo: 'Academia Unifor',
+    mensagem: 'Você está há 3 dias sem treinar. Bora voltar!',
+    tipo: 'inatividade',
+    lida: true,
+    data_envio: new Date().toISOString(),
+  },
+];
+
+// ── Subject (Singleton) ─────────────────────────────────────────────────────
 const NotificationService = (() => {
   let observers = [];
-  let state = {
-    notifications: [],
-  };
+  let state = { notifications: MOCK_NOTIFICACOES };
 
   return {
-    // registra um observer (componente React via setState)
     subscribe(observer) {
       observers.push(observer);
     },
 
-    // remove o observer quando o componente desmonta
     unsubscribe(observer) {
       observers = observers.filter((o) => o !== observer);
     },
 
-    // notifica todos obs. com o estado atual
     notify() {
       observers.forEach((observer) => observer({ ...state }));
     },
 
-    // add notificação e notifica a todos
     push(notification) {
       const nova = {
         id: Date.now(),
-        titulo: notification.titulo,
+        titulo: notification.titulo ?? 'Academia Unifor',
         mensagem: notification.mensagem,
-        tipo: notification.tipo || 'info',
+        tipo: notification.tipo ?? 'info',
         lida: false,
         data_envio: new Date().toISOString(),
       };
@@ -64,17 +87,13 @@ const NotificationService = (() => {
   };
 })();
 
-// observer
+// ── Hook Observer ────────────────────────────────────────────────────────────
 export function useNotifications() {
   const [state, setState] = useState(NotificationService.getState());
 
   useEffect(() => {
-    // registra comp. como observer
     NotificationService.subscribe(setState);
-
-    return () => {
-      NotificationService.unsubscribe(setState);
-    };
+    return () => NotificationService.unsubscribe(setState);
   }, []);
 
   const unreadCount = state.notifications.filter((n) => !n.lida).length;
@@ -82,9 +101,9 @@ export function useNotifications() {
   return {
     notifications: state.notifications,
     unreadCount,
-    markAsRead: (id) => NotificationService.markAsRead(id),
-    markAllAsRead: () => NotificationService.markAllAsRead(),
-    push: (n) => NotificationService.push(n),
+    markAsRead:    (id) => NotificationService.markAsRead(id),
+    markAllAsRead: ()   => NotificationService.markAllAsRead(),
+    push:          (n)  => NotificationService.push(n),
   };
 }
 

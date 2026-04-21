@@ -16,10 +16,6 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={null}>{children}</AuthContext.Provider>;
 }
 
-/**
- * Hook de autenticação.
- * Lê token e usuario do configStore.
- */
 export function useAuth() {
   const { token, usuario, setToken, setUsuario, clearAll } = useConfigStore();
 
@@ -28,15 +24,22 @@ export function useAuth() {
    *
    * TODO (backend): implementar validação real + retornar { token, usuario }
    */
-  async function login(email, senha) {
-    const response = await api.post('/v1/login', { email, senha });
-    const novoToken = response.data?.token ?? response.data;
-    setToken(novoToken);
-    if (response.data?.usuario) {
-      setUsuario(response.data.usuario);
-    }
-    return novoToken;
+async function login(email, senha) {
+  // ── LOGIN FAKE — remover quando o backend estiver pronto ──
+  const FAKE_EMAIL = 'aluno@gmail.com';
+  const FAKE_SENHA = 'senha123456789';
+
+  if (email !== FAKE_EMAIL || senha !== FAKE_SENHA) {
+    throw new Error('Credenciais inválidas.');
   }
+
+  const fakeToken = 'fake-token-dev';
+  const fakeUsuario = { nome: 'Aluno', email: FAKE_EMAIL };
+
+  setToken(fakeToken);
+  setUsuario(fakeUsuario);
+  return fakeToken;
+}
 
   function logout() {
     clearAll();

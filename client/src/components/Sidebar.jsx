@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotifications } from '../hooks/useNotifications';
 
-/* ── Ícones inline ── */
 function IcMenu() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -13,7 +13,6 @@ function IcMenu() {
     </svg>
   );
 }
-
 function IcPlusCircle() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -24,7 +23,6 @@ function IcPlusCircle() {
     </svg>
   );
 }
-
 function IcSearch() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -34,12 +32,57 @@ function IcSearch() {
     </svg>
   );
 }
+function IcBell({ hasUnread }) {
+  return (
+    <div style={{ position: 'relative', display: 'inline-flex' }}>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </svg>
+      {hasUnread && (
+        <span style={{
+          position: 'absolute', top: '-3px', right: '-3px',
+          width: '8px', height: '8px', background: '#ef4444',
+          borderRadius: '50%'
+        }} />
+      )}
+    </div>
+  );
+}
 
-/* ── Conteúdo interno (reutilizado em expanded e mobile drawer) ── */
-function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick }) {
+function NotificacoesPainel({ onVoltar, notifications, onMarkAsRead }) {
   return (
     <>
-      {/* Cabeçalho */}
+      <div className="sidebar-header">
+        <span className="sidebar-title">Notificações</span>
+        <button className="sidebar-voltar-btn" onClick={onVoltar}>Voltar</button>
+      </div>
+      <div className="sidebar-notif-list">
+        {notifications.length === 0 ? (
+          <span className="sidebar-empty">Nenhuma notificação</span>
+        ) : (
+          notifications.map((n) => (
+            <div
+              key={n.id}
+              className={`sidebar-notif-card${n.lida ? ' sidebar-notif-card--lida' : ''}`}
+              onClick={() => onMarkAsRead(n.id)}
+            >
+              <span className="sidebar-notif-fonte">Academia Unifor</span>
+              <p className="sidebar-notif-msg">{n.mensagem}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  );
+}
+
+function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick, onShowNotif }) {
+  const { unreadCount } = useNotifications();
+
+  return (
+    <>
       <div className="sidebar-header">
         <div className="sidebar-header-left">
           {onToggle && (
@@ -54,22 +97,20 @@ function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick }) {
         </button>
       </div>
 
-      {/* Busca */}
       <div className="sidebar-search">
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Pesquisar..."
           className="sidebar-search-input"
-          aria-label="Buscar treinos"
+          aria-label="Pesquisar treinos"
         />
         <span className="sidebar-search-icon"><IcSearch /></span>
       </div>
 
-      {/* Lista de conversas/treinos */}
       <nav className="sidebar-nav" aria-label="Histórico de treinos">
         <span className="sidebar-section-label">Treinos</span>
         {treinos.length === 0 ? (
-          <span className="sidebar-empty">Nenhum treino ainda</span>
+          <span className="sidebar-empty">Nenhum treino ainda.</span>
         ) : (
           treinos.map((t) => (
             <Link
@@ -84,36 +125,63 @@ function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick }) {
         )}
       </nav>
 
-      {/* Rodapé com usuário */}
+      {}
+      <div className="sidebar-list-btn-area">
+        <Link to="/crud-treino" className="sidebar-acessar-lista-btn" onClick={onItemClick}>
+          Acessar lista
+        </Link>
+      </div>
+
+      {}
       {user && (
         <div className="sidebar-footer">
           <div className="sidebar-avatar" aria-hidden="true">
             {user.nome?.[0]?.toUpperCase() ?? 'U'}
           </div>
-          <span className="sidebar-user-email">{user.email}</span>
+          <Link to="/perfil" className="sidebar-user-email" onClick={onItemClick}>
+            {user.email ?? 'aluno@gmail.com'}
+          </Link>
+          <button
+            className="sidebar-icon-btn sidebar-bell-btn"
+            onClick={onShowNotif}
+            aria-label="Ver notificações"
+          >
+            <IcBell hasUnread={unreadCount > 0} />
+          </button>
         </div>
       )}
     </>
   );
 }
 
-/* ── Sidebar principal ── */
-function Sidebar({
-  collapsed = false,
-  onToggle,
-  mobileOpen = false,
-  onMobileClose,
-  treinos = [],
-}) {
+function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClose, treinos = [] }) {
   const { user } = useAuth();
+  const { notifications, markAsRead } = useNotifications();
   const navigate = useNavigate();
+  const [showNotif, setShowNotif] = useState(false);
 
   function handleNewChat() {
     navigate('/novo-chat');
     onMobileClose?.();
   }
 
-  /* Desktop colapsado — só ícones */
+  const commonContent = showNotif ? (
+    <NotificacoesPainel
+      onVoltar={() => setShowNotif(false)}
+      notifications={notifications}
+      onMarkAsRead={markAsRead}
+    />
+  ) : (
+    <SidebarContent
+      treinos={treinos}
+      user={user}
+      onNewChat={handleNewChat}
+      onToggle={!mobileOpen ? onToggle : undefined}
+      onItemClick={onMobileClose}
+      onShowNotif={() => setShowNotif(true)}
+    />
+  );
+
   if (collapsed) {
     return (
       <aside className="sidebar sidebar--collapsed" aria-label="Menu lateral recolhido">
@@ -125,7 +193,7 @@ function Sidebar({
         </button>
         {user && (
           <div className="sidebar-collapsed-footer">
-            <div className="sidebar-avatar" title={user.email} aria-hidden="true">
+            <div className="sidebar-avatar" title={user.email ?? 'aluno@gmail.com'} aria-hidden="true">
               {user.nome?.[0]?.toUpperCase() ?? 'U'}
             </div>
           </div>
@@ -134,43 +202,26 @@ function Sidebar({
     );
   }
 
-  /* Mobile — drawer overlay */
-  const isMobileMode = mobileOpen !== undefined && onMobileClose;
-  if (isMobileMode) {
+  if (onMobileClose !== undefined) {
     return (
       <>
         {mobileOpen && (
-          <div
-            className="sidebar-overlay"
-            onClick={onMobileClose}
-            aria-hidden="true"
-          />
+          <div className="sidebar-overlay" onClick={onMobileClose} aria-hidden="true" />
         )}
         <aside
           className={`sidebar sidebar--mobile${mobileOpen ? ' sidebar--mobile-open' : ''}`}
           aria-label="Menu lateral"
           aria-hidden={!mobileOpen}
         >
-          <SidebarContent
-            treinos={treinos}
-            user={user}
-            onNewChat={handleNewChat}
-            onItemClick={onMobileClose}
-          />
+          {commonContent}
         </aside>
       </>
     );
   }
 
-  /* Desktop expandido */
   return (
     <aside className="sidebar sidebar--expanded" aria-label="Menu lateral">
-      <SidebarContent
-        treinos={treinos}
-        user={user}
-        onNewChat={handleNewChat}
-        onToggle={onToggle}
-      />
+      {commonContent}
     </aside>
   );
 }

@@ -1,6 +1,5 @@
 import Logo from "./Logo";
 
-/* ── Indicador de loading (três pontos pulsando) — RF06.1 ── */
 function TypingIndicator() {
   return (
     <div className="typing-indicator" aria-label="Assistente digitando">
@@ -11,7 +10,6 @@ function TypingIndicator() {
   );
 }
 
-/* ── Botão de tentar novamente — RF06.6 ── */
 function RetryButton({ onRetry }) {
   return (
     <button
@@ -83,18 +81,6 @@ function BotText({ text }) {
   return <>{elements}</>;
 }
 
-/**
- * ChatMessage
- *
- * Props:
- *   message {object}:
- *     id       {string|number}
- *     tipo     {'usuario' | 'bot'}
- *     conteudo {string}
- *     loading  {boolean}  — mostra três pontos enquanto aguarda resposta
- *     error    {boolean}  — exibe mensagem de erro com botão retry
- *     onRetry  {function} — callback do retry
- */
 function ChatMessage({ message }) {
   const { tipo, conteudo, loading, error, onRetry } = message;
   const isUser = tipo === "usuario";

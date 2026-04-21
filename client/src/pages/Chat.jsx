@@ -32,6 +32,7 @@ function Chat() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [ultimaMsgBot, setUltimaMsgBot] = useState(null);
 
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
@@ -43,9 +44,7 @@ function Chat() {
 
   useEffect(() => {
     const firstMessage = location.state?.firstMessage;
-    if (firstMessage) {
-      sendMessage(firstMessage);
-    }
+    if (firstMessage) sendMessage(firstMessage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -58,37 +57,26 @@ function Chat() {
 
   async function sendMessage(text, retryBotId = null) {
     if (!retryBotId) {
-      const userMsg = { id: `user-${Date.now()}`, tipo: 'usuario', conteudo: text };
-      setMessages((prev) => [...prev, userMsg]);
+      setMessages((prev) => [...prev, {
+        id: `user-${Date.now()}`, tipo: 'usuario', conteudo: text
+      }]);
     }
 
     const botId = retryBotId ?? `bot-${Date.now()}`;
-
     setMessages((prev) => {
       const already = prev.find((m) => m.id === botId);
-      if (already) {
-        return prev.map((m) =>
-          m.id === botId ? { ...m, conteudo: '', loading: true, error: false } : m
-        );
-      }
+      if (already) return prev.map((m) =>
+        m.id === botId ? { ...m, conteudo: '', loading: true, error: false } : m
+      );
       return [...prev, { id: botId, tipo: 'bot', conteudo: '', loading: true, error: false }];
     });
 
     setIsGenerating(true);
+    setUltimaMsgBot(null);
     abortControllerRef.current = new AbortController();
-
-    // Timeout 30s — RF06.6
-    timeoutRef.current = setTimeout(() => {
-      abortControllerRef.current?.abort();
-    }, 30000);
+    timeoutRef.current = setTimeout(() => abortControllerRef.current?.abort(), 30000);
 
     try {
-      /**
-       * Endpoint: GET /v1/enviarMensagem
-       * O backend retorna { Resposta: "..." }
-       * TODO: migrar para POST com { mensagem: text, conversa_id: id }
-       *       quando o controller.chat.js for implementado completamente.
-       */
       const response = await api.get('/v1/enviarMensagem', {
         signal: abortControllerRef.current.signal,
       });
@@ -100,22 +88,15 @@ function Chat() {
         'Sem resposta do servidor.';
 
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === botId ? { ...m, conteudo, loading: false } : m
-        )
+        prev.map((m) => m.id === botId ? { ...m, conteudo, loading: false } : m)
       );
+      setUltimaMsgBot(botId);
     } catch (err) {
       if (err.name !== 'AbortError' && err.name !== 'CanceledError') {
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === botId
-              ? {
-                  ...m,
-                  loading: false,
-                  error: true,
-                  onRetry: () => sendMessage(text, botId),
-                }
-              : m
+          prev.map((m) => m.id === botId
+            ? { ...m, loading: false, error: true, onRetry: () => sendMessage(text, botId) }
+            : m
           )
         );
       }
@@ -136,6 +117,11 @@ function Chat() {
           : m
       )
     );
+  }
+
+  function handleAdicionarTreino() {
+    // TODO: lógica de salvar treino sugerido pela IA
+    alert('Treino adicionado! (TODO: integrar com POST /v1/treinos)');
   }
 
   return (
@@ -161,7 +147,20 @@ function Chat() {
         <main className="chat-main" aria-label="Conversa">
           <div className="chat-messages" aria-live="polite">
             {messages.map((msg) => (
-              <ChatMessage key={msg.id} message={msg} />
+              <div key={msg.id}>
+                <ChatMessage message={msg} />
+                {/* Botão "Adicionar treino" aparece após a última resposta do bot — logado */}
+                {isLoggedIn && msg.id === ultimaMsgBot && msg.tipo === 'bot' && !msg.loading && !msg.error && (
+                  <div className="chat-add-treino-area">
+                    <button
+                      className="chat-add-treino-btn"
+                      onClick={handleAdicionarTreino}
+                    >
+                      Adicionar treino
+                    </button>
+                  </div>
+                )}
+              </div>
             ))}
             <div ref={messagesEndRef} />
           </div>
