@@ -2,7 +2,10 @@
 
 /* ── Tokens ── */
 :root {
-  --brand-blue: #1A73E8;
+  --brand-blue: #199CFF;
+  --brand-blue-dark: #0e7fde;
+  --link-blue: #1A73E8;
+  --link-blue-dark: #1558b0;
   --black:      #000000;
   --text-primary:   #1a1a1a;
   --text-secondary: #6b7280;
@@ -61,7 +64,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 
 .unitreino-logo { display: flex; align-items: center; gap: 8px; }
 
-.logo-text { font-size: 1rem; font-weight: 600; line-height: 1; }
+.logo-text { font-size: 1.15rem; font-weight: 600; line-height: 1; }
 .logo-uni    { color: var(--brand-blue); font-weight: 700; }
 .logo-treino { color: var(--text-primary); font-weight: 400; }
 
@@ -703,7 +706,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 
 .auth-link-small {
   font-size: 0.82rem;
-  color: var(--brand-blue);
+  color: var(--link-blue);
   transition: opacity .15s;
 }
 .auth-link-small:hover { opacity: .75; }
@@ -780,7 +783,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 }
 
 .auth-link {
-  color: var(--brand-blue);
+  color: var(--link-blue);
   font-weight: 500;
   transition: opacity .15s;
 }
@@ -959,7 +962,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 
 .perfil-editar-btn {
   font-size: 0.78rem;
-  color: var(--brand-blue);
+  color: var(--link-blue);
   transition: opacity .15s;
 }
 .perfil-editar-btn:hover { opacity: .75; }
@@ -1032,7 +1035,7 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 
 .perfil-acao-link {
   font-size: 0.9rem;
-  color: var(--brand-blue);
+  color: var(--link-blue);
   text-align: left;
   padding: 6px 0;
   transition: opacity .15s;
@@ -1281,4 +1284,15 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 
   .perfil-main  { padding: 16px; }
   .perfil-card  { padding: 20px 16px; }
+}
+
+/* ── Sidebar — "Treinos" clicável ── */
+.sidebar-title-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color .15s;
+}
+.sidebar-title-link:hover {
+  color: var(--brand-blue);
 }

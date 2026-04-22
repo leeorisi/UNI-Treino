@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../hooks/useNotifications';
 
+/* ── Ícones ── */
 function IcMenu() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -44,13 +45,14 @@ function IcBell({ hasUnread }) {
         <span style={{
           position: 'absolute', top: '-3px', right: '-3px',
           width: '8px', height: '8px', background: '#ef4444',
-          borderRadius: '50%'
+          borderRadius: '50%',
         }} />
       )}
     </div>
   );
 }
 
+/* ── Painel de Notificações ── */
 function NotificacoesPainel({ onVoltar, notifications, onMarkAsRead }) {
   return (
     <>
@@ -78,6 +80,7 @@ function NotificacoesPainel({ onVoltar, notifications, onMarkAsRead }) {
   );
 }
 
+/* ── Conteúdo principal ── */
 function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick, onShowNotif }) {
   const { unreadCount } = useNotifications();
 
@@ -85,12 +88,16 @@ function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick, onSho
     <>
       <div className="sidebar-header">
         <div className="sidebar-header-left">
+          {/* Botão sanduíche — abre/fecha a sidebar */}
           {onToggle && (
             <button className="sidebar-icon-btn" onClick={onToggle} aria-label="Recolher menu">
               <IcMenu />
             </button>
           )}
-          <span className="sidebar-title">Treinos</span>
+          {/* "Treinos" clicável → /crud-treino */}
+          <Link to="/crud-treino" className="sidebar-title-link" onClick={onItemClick}>
+            Treinos
+          </Link>
         </div>
         <button className="sidebar-icon-btn" onClick={onNewChat} aria-label="Novo chat">
           <IcPlusCircle />
@@ -125,14 +132,12 @@ function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick, onSho
         )}
       </nav>
 
-      {}
       <div className="sidebar-list-btn-area">
         <Link to="/crud-treino" className="sidebar-acessar-lista-btn" onClick={onItemClick}>
           Acessar lista
         </Link>
       </div>
 
-      {}
       {user && (
         <div className="sidebar-footer">
           <div className="sidebar-avatar" aria-hidden="true">
@@ -154,6 +159,7 @@ function SidebarContent({ treinos, user, onNewChat, onToggle, onItemClick, onSho
   );
 }
 
+/* ── Sidebar principal ── */
 function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClose, treinos = [] }) {
   const { user } = useAuth();
   const { notifications, markAsRead } = useNotifications();
@@ -182,9 +188,10 @@ function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClos
     />
   );
 
+  /* Desktop colapsado */
   if (collapsed) {
     return (
-      <aside className="sidebar sidebar--collapsed" aria-label="Menu lateral recolhido">
+      <aside className="sidebar sidebar--collapsed" aria-label="Menu recolhido">
         <button className="sidebar-icon-btn" onClick={onToggle} aria-label="Expandir menu">
           <IcMenu />
         </button>
@@ -193,7 +200,7 @@ function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClos
         </button>
         {user && (
           <div className="sidebar-collapsed-footer">
-            <div className="sidebar-avatar" title={user.email ?? 'aluno@gmail.com'} aria-hidden="true">
+            <div className="sidebar-avatar" title={user.email ?? ''} aria-hidden="true">
               {user.nome?.[0]?.toUpperCase() ?? 'U'}
             </div>
           </div>
@@ -202,6 +209,7 @@ function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClos
     );
   }
 
+  /* Mobile drawer */
   if (onMobileClose !== undefined) {
     return (
       <>
@@ -219,6 +227,7 @@ function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClos
     );
   }
 
+  /* Desktop expandido */
   return (
     <aside className="sidebar sidebar--expanded" aria-label="Menu lateral">
       {commonContent}

@@ -37,6 +37,8 @@ function Chat() {
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
   const timeoutRef = useRef(null);
+  // Guarda contra duplo disparo do StrictMode em dev
+  const firstMsgSentRef = useRef(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,7 +46,10 @@ function Chat() {
 
   useEffect(() => {
     const firstMessage = location.state?.firstMessage;
-    if (firstMessage) sendMessage(firstMessage);
+    if (firstMessage && !firstMsgSentRef.current) {
+      firstMsgSentRef.current = true;
+      sendMessage(firstMessage);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

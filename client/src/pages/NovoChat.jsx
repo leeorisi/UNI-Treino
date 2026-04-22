@@ -6,10 +6,6 @@ import ChatInput from '../components/ChatInput';
 import Logo from '../components/Logo';
 import { useAuth } from '../context/AuthContext';
 
-/**
- * Mock de conversas — substituir por chamada a GET /api/conversas
- * quando o backend estiver pronto.
- */
 const MOCK_TREINOS = [
   { id: '1', titulo: 'Upper completo' },
   { id: '2', titulo: 'Costa e ombro' },
@@ -21,17 +17,11 @@ function NovoChat() {
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  /**
-   * Quando o usuário digita a primeira mensagem em NovoChat,
-   * criamos a conversa (TODO: POST /api/conversas) e redirecionamos
-   * para /chat/:novoId passando a mensagem como state.
-   */
   function handleFirstMessage(text) {
-    // TODO: chamar POST /api/conversas e obter o id da nova conversa
-    // Por enquanto gera um id temporário e navega com a msg no state
-    const tempId = 'novo';
-    navigate(`/chat/${tempId}`, { state: { firstMessage: text } });
+    // TODO: POST /api/conversas
+    navigate('/chat/novo', { state: { firstMessage: text } });
   }
 
   return (
@@ -39,16 +29,15 @@ function NovoChat() {
       <Navbar onMobileMenuClick={() => setMobileSidebarOpen(true)} />
 
       <div className="novo-chat-body">
-        {}
         {isLoggedIn && (
           <>
-            {}
+            {/* Desktop — com toggle */}
             <Sidebar
-              collapsed={false}
+              collapsed={sidebarCollapsed}
+              onToggle={() => setSidebarCollapsed((v) => !v)}
               treinos={MOCK_TREINOS}
             />
-
-            {}
+            {/* Mobile — drawer */}
             <Sidebar
               mobileOpen={mobileSidebarOpen}
               onMobileClose={() => setMobileSidebarOpen(false)}
@@ -57,14 +46,10 @@ function NovoChat() {
           </>
         )}
 
-        {/* Área central */}
         <main className="novo-chat-main" aria-label="Novo chat">
-          {}
           <div className="novo-chat-logo-area" aria-hidden="true">
             <Logo size={64} />
           </div>
-
-          {}
           <div className="novo-chat-input-area">
             <ChatInput onSend={handleFirstMessage} />
           </div>

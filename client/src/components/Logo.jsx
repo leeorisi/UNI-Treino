@@ -1,21 +1,25 @@
 import uniforLogo from '../assets/logounifor.png';
 
-function Logo({ size = 32 }) {
+function Logo({ size = 32, iconOnly = false }) {
   return (
     <div className="unitreino-logo" aria-label="UNI Treino">
-      {}
       <img
         src={uniforLogo}
         alt="Logo Unifor"
-        width={size}
-        height={size}
-        className="unifor-img"
+        style={{
+          height: size,
+          width: 'auto',
+          objectFit: 'contain',
+          display: 'block',
+          flexShrink: 0,
+        }}
       />
-
-      <span className="logo-text">
-        <span className="logo-uni">UNI</span>
-        <span className="logo-treino"> Treino</span>
-      </span>
+      {!iconOnly && (
+        <span className="logo-text">
+          <span className="logo-uni">UNI</span>
+          <span className="logo-treino"> Treino</span>
+        </span>
+      )}
     </div>
   );
 }

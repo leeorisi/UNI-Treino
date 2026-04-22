@@ -81,12 +81,12 @@ function Perfil() {
 
         <main className="perfil-main" aria-label="Perfil">
           <div className="perfil-card">
-            {/* Voltar */}
+            {}
             <button className="perfil-voltar" onClick={() => navigate(-1)}>
-              voltar
+              Voltar
             </button>
 
-            {/* Avatar */}
+            {}
             <div className="perfil-avatar-area">
               <div className="perfil-avatar">
                 {campos.nome?.[0]?.toUpperCase() ?? 'A'}
@@ -100,7 +100,7 @@ function Perfil() {
               </button>
             </div>
 
-            {/* Campos */}
+            {}
             <div className="perfil-campos">
               <CampoPerfil label="Nome" value={campos.nome} onChange={handleCampo('nome')} />
               <CampoPerfil label="E-mail" value={campos.email} onChange={handleCampo('email')} type="email" readOnly />
@@ -108,7 +108,7 @@ function Perfil() {
               <CampoPerfil label="Telefone" value={campos.telefone} onChange={handleCampo('telefone')} type="tel" />
             </div>
 
-            {/* Toggle notificações */}
+            {}
             <div className="perfil-toggle-row">
               <span className="perfil-toggle-label">Notificações</span>
               <button
@@ -133,12 +133,12 @@ function Perfil() {
                 className="perfil-acao-link perfil-acao-link--danger"
                 onClick={() => setConfirmarExclusao(true)}
               >
-                Excluir minha conta
+                Excluir a minha conta
               </button>
             </div>
           </div>
 
-          {/* Modal de confirmação de exclusão */}
+          {}
           {confirmarExclusao && (
             <div className="modal-overlay">
               <div className="modal-card">
