@@ -46,3 +46,20 @@ app.use("/v1/enviarMensagem", chatRoutes);
 app.listen(porta, () => {
   console.log(`Server aberto na porta: ${porta}`);
 });
+
+
+// curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+//   -H 'Content-Type: application/json' \
+//   -H 'X-goog-api-key: AIzaSyAGiU7lo3mSu5_LVHZoXCXwrRT8KA_1vG8' \
+//   -X POST \
+//   -d '{
+//     "contents": [
+//       {
+//         "parts": [
+//           {
+//             "text": "Explain how AI works in a few words"
+//           }
+//         ]
+//       }
+//     ]
+//   }'
