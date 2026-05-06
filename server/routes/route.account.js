@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const responseHandler = require("../controllers/controller.responseHandler");
-const controller = require("../controllers/controller.login");
+const controller = require("../controllers/controller.account");
 
 /**
  * @swagger
@@ -26,8 +26,24 @@ const controller = require("../controllers/controller.login");
 //  *         name: status
 //  *         schema:
 //  *           type: string
-router.post("/", (req, res) => {
-  responseHandler(req, res, controller.postTokenController, "Token", req);
+// router.post("/", (req, res) => {
+//   responseHandler(req, res, controller.postTokenController, "Token", req);
+// });
+
+router.post("/login", (req, res) => {
+  responseHandler(req, res, controller.postLoginController, "result");
 });
 
+router.post("/resetPassword/sendCode", (req, res) => {
+  responseHandler(
+    req,
+    res,
+    controller.postSendResetPasswordEmailController,
+    "result",
+  );
+});
+
+router.post("/resetPassword", (req, res) => {
+  responseHandler(req, res, controller.postResetPasswordController, "result");
+});
 module.exports = router;
