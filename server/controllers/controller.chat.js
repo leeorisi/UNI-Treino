@@ -1,6 +1,6 @@
-async function getEnviarMensagemController(req, res) {
+async function postEnviarMensagemController(req, res) {
   res = { Resposta: "Bla bla bla" };
   return res;
 }
 
-module.exports = { getEnviarMensagemController };
+module.exports = { postEnviarMensagemController };

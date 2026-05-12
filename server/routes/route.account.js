@@ -34,6 +34,10 @@ router.post("/login", (req, res) => {
   responseHandler(req, res, controller.postLoginController, "result");
 });
 
+router.post("/register", (req, res) => {
+  responseHandler(req, res, controller.postRegisterController, "result");
+});
+
 router.post("/resetPassword/sendCode", (req, res) => {
   responseHandler(
     req,

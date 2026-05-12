@@ -10,6 +10,7 @@ const ResetCodeValidator = require("../handlers/ConcreteHandlers/ResetCodeValida
 const NotPreviousPasswordValidator = require("../handlers/ConcreteHandlers/NotPreviousPasswordValidator");
 const EmailFormatValidator = require("../handlers/ConcreteHandlers/EmailFormatValidator");
 const PasswordMatchValidator = require("../handlers/ConcreteHandlers/PasswordMatchValidator");
+const Account = require("../models/model.account");
 
 async function postLoginController(req, res) {
   const loginChain = new LoginFieldsValidator();
@@ -22,6 +23,15 @@ async function postLoginController(req, res) {
       return { success: true, accessToken: getToken({}) };
     }),
   );
+
+  return res;
+}
+
+async function postRegisterController(req, res) {
+  const { nome, email, senha } = req;
+  const account = new Account({ nome, email, senha });
+
+  res = await account.save();
 
   return res;
 }
@@ -49,4 +59,5 @@ module.exports = {
   postLoginController,
   postSendResetPasswordEmailController,
   postResetPasswordController,
+  postRegisterController,
 };

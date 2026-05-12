@@ -8,6 +8,7 @@ require("dotenv").config();
 const { verifyJWT } = require("./middleware/middleware.jwtoken");
 const accountRoutes = require("./routes/route.account");
 const chatRoutes = require("./routes/route.chat");
+const { connectDB } = require("./config/database");
 
 const app = express();
 const porta = process.env.NODE_API_PORT;
@@ -40,13 +41,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/v1/account", accountRoutes);
-app.use("/v1/enviarMensagem", chatRoutes);
+app.use("/v1/mensagem", chatRoutes);
 // app.use("/v1/login", verifyJWT accountRoutes);
+
+connectDB();
 
 app.listen(porta, () => {
   console.log(`Server aberto na porta: ${porta}`);
 });
-
 
 // curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
 //   -H 'Content-Type: application/json' \
