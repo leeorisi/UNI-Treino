@@ -13,9 +13,9 @@ const PasswordMatchValidator = require("../handlers/ConcreteHandlers/PasswordMat
 const Account = require("../models/model.account");
 const { hashPassword } = require("../config/auth");
 const {
-  default: sendEmail,
   default: sendResetPasswordEmail,
 } = require("../models/model.mailer");
+const crypto = require('crypto'); 
 
 async function postLoginController(req, res) {
   const loginChain = new LoginFieldsValidator();
@@ -50,16 +50,13 @@ async function postSendResetPasswordEmailController(req, res) {
 
   try {
     const token = crypto.randomBytes(20).toString("hex");
-
     const now = new Date();
 
     // Salvar token no banco
 
-    sendResetPasswordEmail(email, token);
-
-    return res.send();
+    return sendResetPasswordEmail(email, token);
   } catch (err) {
-    return res.status(400).send({ error: "Cannot reset password, try again" });
+    return { error: "Cannot reset password, try again", message: err };
   }
 }
 

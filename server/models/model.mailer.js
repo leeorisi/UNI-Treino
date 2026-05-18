@@ -1,15 +1,8 @@
-const { MailtrapClient } = require("mailtrap");
+import  { MailtrapClient } from "mailtrap";
 
-export const client = () => {
-  try {
-    new MailtrapClient({
+const mailTrapClient = new MailtrapClient({
       token: process.env.MAILTRAP_TOKEN,
     });
-    console.log("Cliente Mailtrap criado com sucesso");
-  } catch (err) {
-    console.error("Erro ao criar Mailtrap:", err);
-  }
-};
 
 export default function sendResetPasswordEmail(recipient, token) {
   const sender = {
@@ -17,7 +10,7 @@ export default function sendResetPasswordEmail(recipient, token) {
     name: "UniTreino",
   };
 
-  client
+  mailTrapClient
     .send({
       from: sender,
       to: recipient,

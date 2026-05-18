@@ -9,6 +9,7 @@ const { verifyJWT } = require("./middleware/middleware.jwtoken");
 const accountRoutes = require("./routes/route.account");
 const chatRoutes = require("./routes/route.chat");
 const { connectDB } = require("./config/database");
+const { connectMailtap } = require("./models/model.mailer");
 
 const app = express();
 const porta = process.env.NODE_API_PORT;
