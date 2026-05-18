@@ -12,6 +12,10 @@ const EmailFormatValidator = require("../handlers/ConcreteHandlers/EmailFormatVa
 const PasswordMatchValidator = require("../handlers/ConcreteHandlers/PasswordMatchValidator");
 const Account = require("../models/model.account");
 const { hashPassword } = require("../config/auth");
+const {
+  default: sendEmail,
+  default: sendResetPasswordEmail,
+} = require("../models/model.mailer");
 
 async function postLoginController(req, res) {
   const loginChain = new LoginFieldsValidator();
@@ -30,10 +34,10 @@ async function postLoginController(req, res) {
 
 async function postRegisterController(req, res) {
   let { nome, email, senha } = req;
-  
+
   const hash = await hashPassword(senha);
   senha = hash;
-  console.log(hash)
+  console.log(hash);
   const account = new Account({ nome, email, senha });
 
   res = await account.save();
@@ -42,8 +46,21 @@ async function postRegisterController(req, res) {
 }
 
 async function postSendResetPasswordEmailController(req, res) {
-  // Logica
-  return {sucesso: true, email: req.email, codigo: 123}; // JSON que sera retornado
+  const { email } = req;
+
+  try {
+    const token = crypto.randomBytes(20).toString("hex");
+
+    const now = new Date();
+
+    // Salvar token no banco
+
+    sendResetPasswordEmail(email, token);
+
+    return res.send();
+  } catch (err) {
+    return res.status(400).send({ error: "Cannot reset password, try again" });
+  }
 }
 
 async function postResetPasswordController(req, res) {
