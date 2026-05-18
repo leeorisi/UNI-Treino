@@ -11,6 +11,7 @@ const NotPreviousPasswordValidator = require("../handlers/ConcreteHandlers/NotPr
 const EmailFormatValidator = require("../handlers/ConcreteHandlers/EmailFormatValidator");
 const PasswordMatchValidator = require("../handlers/ConcreteHandlers/PasswordMatchValidator");
 const Account = require("../models/model.account");
+const { hashPassword } = require("../config/auth");
 
 async function postLoginController(req, res) {
   const loginChain = new LoginFieldsValidator();
@@ -28,7 +29,11 @@ async function postLoginController(req, res) {
 }
 
 async function postRegisterController(req, res) {
-  const { nome, email, senha } = req;
+  let { nome, email, senha } = req;
+  
+  const hash = await hashPassword(senha);
+  senha = hash;
+  console.log(hash)
   const account = new Account({ nome, email, senha });
 
   res = await account.save();
@@ -37,12 +42,8 @@ async function postRegisterController(req, res) {
 }
 
 async function postSendResetPasswordEmailController(req, res) {
-  const sendEmailChain = new ResetPassFieldsValidator();
-  sendEmailChain
-    .setNext(new EmailFormatValidator())
-    .setNext(new EmailSentValidator());
-
-  return runValidation(sendEmailChain, req);
+  // Logica
+  return {sucesso: true, email: req.email, codigo: 123}; // JSON que sera retornado
 }
 
 async function postResetPasswordController(req, res) {
