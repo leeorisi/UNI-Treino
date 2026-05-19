@@ -11,14 +11,14 @@ const MOCK_TREINOS = [
   { id: '1', titulo: 'Upper completo' },
   { id: '2', titulo: 'Costa e ombro' },
   { id: '3', titulo: 'Legday completo' },
-  { id: '4', titulo: 'Peito e tríceps' },
+  { id: '4', titulo: 'Peito e triceps' },
 ];
 
 function StopButton({ onClick }) {
   return (
-    <button className="stop-generation-btn" onClick={onClick} aria-label="Parar geração">
+    <button className="stop-generation-btn" onClick={onClick} aria-label="Parar geracao">
       <span className="stop-square" aria-hidden="true" />
-      Parar geração
+      Parar geracao
     </button>
   );
 }
@@ -37,7 +37,6 @@ function Chat() {
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
   const timeoutRef = useRef(null);
-  // Guarda contra duplo disparo do StrictMode em dev
   const firstMsgSentRef = useRef(false);
 
   useEffect(() => {
@@ -82,14 +81,17 @@ function Chat() {
     timeoutRef.current = setTimeout(() => abortControllerRef.current?.abort(), 30000);
 
     try {
-      const response = await api.get('/v1/enviarMensagem', {
-        signal: abortControllerRef.current.signal,
-      });
+      // POST para /v1/mensagem com o texto da mensagem no body
+      const response = await api.post(
+        '/v1/mensagem',
+        { mensagem: text },
+        { signal: abortControllerRef.current.signal }
+      );
 
+      // responseHandler retorna { Mensagem: { Resposta: "..." }, mensagem: { msg: "100..." } }
       const conteudo =
-        response.data?.Resposta ??
+        response.data?.Mensagem?.Resposta ??
         response.data?.mensagem?.conteudo ??
-        response.data?.dados ??
         'Sem resposta do servidor.';
 
       setMessages((prev) =>
@@ -118,14 +120,13 @@ function Chat() {
     setMessages((prev) =>
       prev.map((m, i) =>
         i === prev.length - 1 && m.tipo === 'bot' && m.loading
-          ? { ...m, loading: false, conteudo: m.conteudo || '[geração interrompida]' }
+          ? { ...m, loading: false, conteudo: m.conteudo || '[geracao interrompida]' }
           : m
       )
     );
   }
 
   function handleAdicionarTreino() {
-    // TODO: lógica de salvar treino sugerido pela IA
     alert('Treino adicionado! (TODO: integrar com POST /v1/treinos)');
   }
 
@@ -154,7 +155,6 @@ function Chat() {
             {messages.map((msg) => (
               <div key={msg.id}>
                 <ChatMessage message={msg} />
-                {/* Botão "Adicionar treino" aparece após a última resposta do bot — logado */}
                 {isLoggedIn && msg.id === ultimaMsgBot && msg.tipo === 'bot' && !msg.loading && !msg.error && (
                   <div className="chat-add-treino-area">
                     <button
