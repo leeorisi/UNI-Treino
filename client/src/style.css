@@ -1296,3 +1296,22 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
 .sidebar-title-link:hover {
   color: var(--brand-blue);
 }
+
+/* ── Cadastro — mensagem de sucesso ── */
+.auth-sucesso {
+  width: 100%;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: #166534;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Google btn desabilitado ── */
+.auth-google-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

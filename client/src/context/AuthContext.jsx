@@ -1,11 +1,3 @@
-/**
- * AuthContext — wrapper fino sobre o configStore (Zustand).
- *
- * O configStore já persiste token e usuario no localStorage.
- * Este context existe apenas para manter a interface que os componentes
- * já usam (isLoggedIn, user, login, logout) sem precisar expor o Zustand
- * diretamente em todos os lugares.
- */
 import { createContext } from 'react';
 import { useConfigStore } from '../../store/configStore';
 import { api } from '../../lib/api';
@@ -20,26 +12,32 @@ export function useAuth() {
   const { token, usuario, setToken, setUsuario, clearAll } = useConfigStore();
 
   /**
-   * Chama POST /v1/login, salva token no store.
+   * Login real — POST /v1/account/login
    *
-   * TODO (backend): implementar validação real + retornar { token, usuario }
+   * O backend espera: { email, password }
+   * Retorna: { result: { success: true, accessToken: "..." }, mensagem: { msg: "100..." } }
+   *
+   * NOTA BACKEND: getToken({}) gera JWT com payload vazio.
+   * Quando o backend incluir { email, nome } no payload, podemos
+   * decodificar o token aqui para extrair os dados do usuário.
    */
-async function login(email, senha) {
-  // ── LOGIN FAKE — remover quando o backend estiver pronto ──
-  const FAKE_EMAIL = 'aluno@gmail.com';
-  const FAKE_SENHA = 'senha123456789';
+  async function login(email, senha) {
+    const response = await api.post('/v1/account/login', {
+      email,
+      password: senha, // backend usa "password", não "senha"
+    });
 
-  if (email !== FAKE_EMAIL || senha !== FAKE_SENHA) {
-    throw new Error('Credenciais inválidas.');
+    const accessToken = response.data?.result?.accessToken;
+    if (!accessToken) throw new Error('Token não recebido do servidor.');
+
+    setToken(accessToken);
+
+    // Salva dados básicos do usuário (email do form) enquanto o backend
+    // não retorna os dados completos no token JWT
+    setUsuario({ email, nome: email.split('@')[0] });
+
+    return accessToken;
   }
-
-  const fakeToken = 'fake-token-dev';
-  const fakeUsuario = { nome: 'Aluno', email: FAKE_EMAIL };
-
-  setToken(fakeToken);
-  setUsuario(fakeUsuario);
-  return fakeToken;
-}
 
   function logout() {
     clearAll();
