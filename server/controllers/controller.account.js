@@ -50,7 +50,6 @@ async function postRegisterController(req) {
 
   const hash = await hashPassword(senha);
   senha = hash;
-  console.log(hash);
   const account = new Account({ nome, email, senha });
 
   const result = await account.save();
