@@ -52,9 +52,10 @@ async function postRegisterController(req) {
   console.log(hash);
   const account = new Account({ nome, email, senha });
 
-  res = await account.save();
+  const result = await account.save();
 
-  return res;
+  return result;
+
 }
 
 async function postSendResetPasswordEmailController(req) {
