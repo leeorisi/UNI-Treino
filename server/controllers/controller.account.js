@@ -12,6 +12,7 @@ const Account = require("../models/model.account");
 const { hashPassword, verifyPassword } = require("../config/auth");
 const { default: sendResetPasswordEmail } = require("../models/model.mailer");
 const crypto = require("crypto");
+const bcrypt = require('bcryptjs');
 
 async function postLoginController(body) {
   const { email, password } = body;
@@ -63,23 +64,87 @@ async function postSendResetPasswordEmailController(req) {
 
   try {
     const token = crypto.randomBytes(20).toString("hex");
-    const now = new Date();
 
-    // Salvar token no banco
-    return sendResetPasswordEmail(email, token);
+    const tempoValidade = new Date();
+    tempoValidade.setHours(tempoValidade.getHours() + 1);
+
+    const usuario = await Account.findOne({ email });
+
+    if (!usuario) {
+      return { 
+        success: true, 
+        message: "Se o e-mail informado estiver cadastrado, as instruções de recuperação foram enviadas." 
+      };
+    }
+
+    usuario.tokenRedefinicaoSenha = token;
+    usuario.validadeTokenRedefinicaoSenha = tempoValidade;
+    await usuario.save();   
+
+    const recipients = [
+        {
+          email: usuario.email,
+          name: usuario.nome
+        }
+      ];
+
+    await sendResetPasswordEmail(recipients, token);
+    
+    return { 
+      success: true, 
+      message: "Se o e-mail informado estiver cadastrado, as instruções de recuperação foram enviadas." 
+    };
   } catch (err) {
-    return { error: "Cannot reset password, try again", message: err };
+    return { error: "Não foi possível redefinir sua senha, tente novamente.", message: err };
   }
 }
 
 async function postResetPasswordController(req) {
-  const resetPasswordChain = new ResetCodeValidator();
-  resetPasswordChain
-    .setNext(new PasswordMatchValidator())
-    .setNext(new NotPreviousPasswordValidator())
-    .setNext(new PasswordStrengthValidator());
+  const { email, senha, token } = req;
 
-  return runValidation(resetPasswordChain, req);
+  try {
+    const regexSenha = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!regexSenha.test(senha)) {
+      return { 
+        error: "A senha deve conter pelo menos 8 caracteres, incluindo letras e números." 
+      };
+    }
+
+    const usuario = await Account.findOne({ email });
+
+    if (!usuario) {
+      return { error: "Usuário não encontrado ou dados inválidos." };
+    }
+
+    if (!usuario.tokenRedefinicaoSenha || usuario.tokenRedefinicaoSenha !== token) {
+      return { error: "Token de redefinição inválido ou já utilizado." };
+    }
+
+    const agora = new Date();
+    if (usuario.validadeTokenRedefinicaoSenha < agora) {
+      return { error: "Este token expirou. Solicite uma nova recuperação." };
+    }
+
+    const ehIgualASenhaAnterior = await bcrypt.compare(senha, usuario.senha);
+    if (ehIgualASenhaAnterior) {
+      return { error: "A nova senha não pode ser igual à sua senha atual." };
+    }
+
+    const saltRounds = 10;
+    const novaSenhaCriptografada = await bcrypt.hash(senha, saltRounds);
+
+    usuario.senha = novaSenhaCriptografada;
+    usuario.tokenRedefinicaoSenha = null;
+    usuario.validadeTokenRedefinicaoSenha = null;
+
+    await usuario.save();
+
+    return { success: true, message: "Senha redefinida com sucesso!" };
+
+  } catch (err) {
+    console.error("Erro no postResetPasswordController:", err);
+    return { error: "Cannot reset password, try again", message: err.message || err };
+  }
 }
 
 module.exports = {
