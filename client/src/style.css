@@ -28,6 +28,8 @@
 
   --shadow-sm:  0 1px 3px rgba(0,0,0,.08);
   --shadow-md:  0 4px 12px rgba(0,0,0,.10);
+  --shadow-hover: 0 8px 18px rgba(15, 23, 42, .12);
+  --focus-ring: 0 0 0 3px rgba(25, 156, 255, .18);
 }
 
 html, body, #root { height: 100%; width: 100%; }
@@ -41,6 +43,92 @@ body {
 
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; border: none; background: none; font-family: var(--font); }
+
+:where(
+  .btn-login,
+  .btn-start-chat,
+  .auth-btn,
+  .auth-google-btn,
+  .sidebar-icon-btn,
+  .sidebar-acessar-lista-btn,
+  .sidebar-voltar-btn,
+  .navbar-hamburger,
+  .navbar-notif-btn,
+  .btn-logout,
+  .stop-generation-btn,
+  .chat-input-icon-btn,
+  .chat-send-btn,
+  .message-retry-btn,
+  .perfil-editar-btn,
+  .perfil-voltar,
+  .perfil-avatar-edit,
+  .perfil-acao-link,
+  .btn-secundario,
+  .btn-perigo,
+  .btn-voltar-top,
+  .crud-criar-btn,
+  .crud-acao-btn,
+  .chat-add-treino-btn,
+  .auth-required-login-btn
+) {
+  transition:
+    background-color .16s ease,
+    background .16s ease,
+    color .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease,
+    transform .16s ease,
+    opacity .16s ease;
+}
+
+:where(
+  .btn-login,
+  .btn-start-chat,
+  .auth-btn,
+  .auth-google-btn,
+  .sidebar-acessar-lista-btn,
+  .stop-generation-btn,
+  .chat-send-btn--active,
+  .message-retry-btn,
+  .btn-secundario,
+  .btn-perigo,
+  .crud-criar-btn,
+  .chat-add-treino-btn,
+  .auth-required-login-btn
+):where(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+:where(
+  .sidebar-icon-btn,
+  .navbar-hamburger,
+  .navbar-notif-btn,
+  .chat-input-icon-btn,
+  .crud-acao-btn,
+  .perfil-avatar-edit
+):where(:hover, :focus-visible):not(:disabled) {
+  transform: translateY(-1px) scale(1.04);
+}
+
+:where(button, a):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+:where(button, a):active:not(:disabled) {
+  transform: translateY(0) scale(.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a) {
+    transition: none !important;
+  }
+
+  :where(button, a):where(:hover, :focus-visible, :active) {
+    transform: none !important;
+  }
+}
 
 .navbar-wrapper {
   position: sticky;
@@ -1083,6 +1171,33 @@ button { cursor: pointer; border: none; background: none; font-family: var(--fon
   gap: 10px;
   justify-content: flex-end;
   margin-top: 4px;
+}
+
+.auth-required-overlay {
+  z-index: 1000;
+  background: rgba(15, 23, 42, .58);
+  backdrop-filter: blur(2px);
+}
+
+.auth-required-card {
+  max-width: 420px;
+}
+
+.auth-required-actions {
+  flex-wrap: wrap;
+}
+
+.auth-required-login-btn {
+  padding: 8px 20px;
+  background: var(--brand-blue);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.auth-required-login-btn:hover {
+  background: var(--brand-blue-dark);
 }
 
 .btn-secundario {

@@ -29,4 +29,20 @@ const verifyJWT = (req, res, next) => {
   }
 };
 
-module.exports = { getToken, verifyJWT };
+const optionalJWT = (req, _res, next) => {
+  const token = req.headers["authorization"] || req.query.token;
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    req.user = jwt.verify(token, SECRET);
+  } catch {
+    req.user = null;
+  }
+
+  return next();
+};
+
+module.exports = { getToken, verifyJWT, optionalJWT };

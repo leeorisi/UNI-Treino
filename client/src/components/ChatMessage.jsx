@@ -104,7 +104,7 @@ function ChatMessage({ message }) {
         ) : error ? (
           <>
             <p className="message-error-text">
-              Ocorreu uma falha de comunicação. Tente novamente.
+              {conteudo || "Ocorreu uma falha de comunicacao. Tente novamente."}
             </p>
             {onRetry && <RetryButton onRetry={onRetry} />}
           </>

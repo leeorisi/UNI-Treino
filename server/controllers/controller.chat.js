@@ -43,6 +43,27 @@ Seja sempre objetivo, motivador e seguro nas suas respostas.
   return basePrompt + lesoesPrompt;
 }
 
+function buildFallbackResponse(mensagem) {
+  const texto = mensagem.toLowerCase();
+
+  if (texto.includes("superior") || texto.includes("peito") || texto.includes("costa") || texto.includes("braco")) {
+    return [
+      "No momento estou com dificuldade para acessar a IA externa, mas posso te passar um treino base de superiores:",
+      "",
+      "1. Supino reto: 3 series de 8 a 12 repeticoes",
+      "2. Remada baixa: 3 series de 10 a 12 repeticoes",
+      "3. Desenvolvimento de ombros: 3 series de 8 a 12 repeticoes",
+      "4. Puxada na frente: 3 series de 10 a 12 repeticoes",
+      "5. Rosca direta: 3 series de 10 a 12 repeticoes",
+      "6. Triceps na polia: 3 series de 10 a 12 repeticoes",
+      "",
+      "Use carga moderada, mantenha a execucao controlada e pare se sentir dor.",
+    ].join("\n");
+  }
+
+  return "No momento estou com dificuldade para acessar a IA externa. Pode tentar novamente em alguns instantes ou pedir um treino especifico, como superiores, inferiores ou cardio.";
+}
+
 async function postEnviarMensagemController(body, req) {
   const { mensagem } = body;
 
@@ -64,21 +85,27 @@ async function postEnviarMensagemController(body, req) {
 
   const systemPrompt = buildSystemPrompt(lesoes);
 
-  // Chama a API do Gemini
-  const geminiResponse = await axios.post(
-    GEMINI_URL,
-    {
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: "user", parts: [{ text: mensagem.trim() }] }],
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "X-goog-api-key": GEMINI_APIKEY,
+  let geminiResponse;
+  try {
+    // Chama a API do Gemini
+    geminiResponse = await axios.post(
+      GEMINI_URL,
+      {
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: mensagem.trim() }] }],
       },
-      timeout: 25000,
-    }
-  );
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-goog-api-key": GEMINI_APIKEY,
+        },
+        timeout: 25000,
+      }
+    );
+  } catch (error) {
+    console.error("[Gemini indisponivel]", error.response?.status || error.message);
+    return { Resposta: buildFallbackResponse(mensagem.trim()) };
+  }
 
   const resposta =
     geminiResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text ??
