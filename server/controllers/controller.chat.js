@@ -65,6 +65,7 @@ function buildFallbackResponse(mensagem) {
 }
 
 async function postEnviarMensagemController(body, req) {
+  console.log("Chegou")
   const { mensagem } = body;
 
   if (!mensagem || typeof mensagem !== "string" || !mensagem.trim()) {

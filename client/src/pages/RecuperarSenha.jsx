@@ -53,16 +53,20 @@ function RecuperarSenha() {
 
     setLoading(true);
     try {
-      await api.post('/v1/account/resetPassword', {
+      const resp = await api.post('/v1/account/resetPassword', {
         email,
         senha: form.senha,
         token: form.token,
       });
-      
+
+      if (resp.data.result.error) {
+        throw new Error(resp.data.result.error);
+      }
+
       navigate('/login', { state: { senhaRedefinida: true } });
     } catch (err) {
-      const mensagemErro = err.response?.data?.error || err.message || 'Código inválido ou expirado.';
-      setErro(mensagemErro);
+        console.log(err)
+      setErro(err);
     } finally {
       setLoading(false);
     }
