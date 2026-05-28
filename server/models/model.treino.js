@@ -1,9 +1,19 @@
-const treinoSchema = new mongoose.Schema({
-  id: String,
+const mongoose = require("mongoose");
+
+const exercicioSchema = new mongoose.Schema({
   nome: { type: String, required: true },
-  dia: { type: String, required: false }, // esta como String porque quem escolhe o dia que vai ser realizado o treino é o usuario
-  data: { type: Date, required: true },
-  treino: { type: [String], default: [] },
+  series: { type: Number, required: true },
+  repeticoes: { type: Number, required: true },
+  carga: { type: Number, required: false, default: 0 },
+  observacao: { type: String, required: false, default: "" }
+});
+
+const treinoSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  descricao: { type: String, required: false, default: "" },
+  // diasSemana: { type: String, required: true },
+  duracaoMinutos: { type: Number, required: true },
+  exercicios: { type: [exercicioSchema], default: [] }
 });
 
 module.exports = mongoose.model("Treino", treinoSchema);
