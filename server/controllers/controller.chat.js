@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const GEMINI_APIKEY = process.env.GEMINI_APIKEY;
 const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
 const GEMINI_MAX_RETRIES = 2;
 
 /**
@@ -47,9 +47,22 @@ Seja sempre objetivo, motivador e seguro nas suas respostas.
 function buildFallbackResponse(mensagem) {
   const texto = mensagem.toLowerCase();
 
-  const hasAny = (palavras) => palavras.some((palavra) => texto.includes(palavra));
+  const hasAny = (palavras) =>
+    palavras.some((palavra) => texto.includes(palavra));
 
-  if (hasAny(["dor", "lesao", "lesão", "machuquei", "machucado", "joelho", "ombro", "lombar", "coluna"])) {
+  if (
+    hasAny([
+      "dor",
+      "lesao",
+      "lesão",
+      "machuquei",
+      "machucado",
+      "joelho",
+      "ombro",
+      "lombar",
+      "coluna",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te orientar com seguranca:",
       "",
@@ -62,7 +75,17 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["suplemento", "creatina", "whey", "pre treino", "pré treino", "termogenico", "termogênico"])) {
+  if (
+    hasAny([
+      "suplemento",
+      "creatina",
+      "whey",
+      "pre treino",
+      "pré treino",
+      "termogenico",
+      "termogênico",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te responder de forma geral:",
       "",
@@ -77,7 +100,18 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["dieta", "alimentacao", "alimentação", "comer", "caloria", "proteina", "proteína", "emagrecer comendo"])) {
+  if (
+    hasAny([
+      "dieta",
+      "alimentacao",
+      "alimentação",
+      "comer",
+      "caloria",
+      "proteina",
+      "proteína",
+      "emagrecer comendo",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso dar uma orientacao geral:",
       "",
@@ -90,7 +124,16 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["iniciante", "comecando", "começando", "primeiro treino", "nunca treinei", "voltei a treinar"])) {
+  if (
+    hasAny([
+      "iniciante",
+      "comecando",
+      "começando",
+      "primeiro treino",
+      "nunca treinei",
+      "voltei a treinar",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar um treino base para iniciante:",
       "",
@@ -107,7 +150,15 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["hipertrofia", "ganhar massa", "massa muscular", "crescer", "ficar grande"])) {
+  if (
+    hasAny([
+      "hipertrofia",
+      "ganhar massa",
+      "massa muscular",
+      "crescer",
+      "ficar grande",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar uma base para hipertrofia:",
       "",
@@ -120,7 +171,16 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["emagrecer", "perder gordura", "secar", "definir", "definicao", "definição"])) {
+  if (
+    hasAny([
+      "emagrecer",
+      "perder gordura",
+      "secar",
+      "definir",
+      "definicao",
+      "definição",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso sugerir uma estrategia de treino para perda de gordura:",
       "",
@@ -132,7 +192,16 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["forca", "força", "ficar forte", "aumentar carga", "carga maxima", "carga máxima"])) {
+  if (
+    hasAny([
+      "forca",
+      "força",
+      "ficar forte",
+      "aumentar carga",
+      "carga maxima",
+      "carga máxima",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar uma base para ganho de forca:",
       "",
@@ -146,7 +215,19 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["serie", "série", "series", "séries", "repeticao", "repetição", "repeticoes", "repetições", "quantas reps"])) {
+  if (
+    hasAny([
+      "serie",
+      "série",
+      "series",
+      "séries",
+      "repeticao",
+      "repetição",
+      "repeticoes",
+      "repetições",
+      "quantas reps",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas aqui vai uma regra simples para series e repeticoes:",
       "",
@@ -159,7 +240,16 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["carga", "peso", "quanto peso", "aumentar peso", "progressao", "progressão"])) {
+  if (
+    hasAny([
+      "carga",
+      "peso",
+      "quanto peso",
+      "aumentar peso",
+      "progressao",
+      "progressão",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te orientar sobre carga:",
       "",
@@ -171,7 +261,15 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["descanso", "descansar", "intervalo", "tempo entre series", "tempo entre séries"])) {
+  if (
+    hasAny([
+      "descanso",
+      "descansar",
+      "intervalo",
+      "tempo entre series",
+      "tempo entre séries",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas aqui vai uma base de descanso:",
       "",
@@ -207,7 +305,16 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (hasAny(["execucao", "execução", "como fazer", "postura", "tecnica", "técnica"])) {
+  if (
+    hasAny([
+      "execucao",
+      "execução",
+      "como fazer",
+      "postura",
+      "tecnica",
+      "técnica",
+    ])
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas aqui vao regras gerais de execucao:",
       "",
@@ -331,7 +438,12 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (texto.includes("superior") || texto.includes("peito") || texto.includes("costa") || texto.includes("braco")) {
+  if (
+    texto.includes("superior") ||
+    texto.includes("peito") ||
+    texto.includes("costa") ||
+    texto.includes("braco")
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar um treino base de superiores:",
       "",
@@ -346,7 +458,12 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (texto.includes("inferior") || texto.includes("perna") || texto.includes("quadriceps") || texto.includes("gluteo")) {
+  if (
+    texto.includes("inferior") ||
+    texto.includes("perna") ||
+    texto.includes("quadriceps") ||
+    texto.includes("gluteo")
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar um treino base de inferiores:",
       "",
@@ -361,7 +478,12 @@ function buildFallbackResponse(mensagem) {
     ].join("\n");
   }
 
-  if (texto.includes("cardio") || texto.includes("esteira") || texto.includes("corrida") || texto.includes("bike")) {
+  if (
+    texto.includes("cardio") ||
+    texto.includes("esteira") ||
+    texto.includes("corrida") ||
+    texto.includes("bike")
+  ) {
     return [
       "No momento estou com dificuldade para acessar a IA externa, mas posso te passar um treino base de cardio:",
       "",
@@ -397,12 +519,13 @@ async function askGemini(systemPrompt, mensagem) {
             "X-goog-api-key": GEMINI_APIKEY,
           },
           timeout: 30000,
-        }
+        },
       );
     } catch (error) {
       lastError = error;
       const status = error.response?.status;
-      const canRetry = status === 503 || status === 429 || error.code === "ECONNABORTED";
+      const canRetry =
+        status === 503 || status === 429 || error.code === "ECONNABORTED";
 
       if (!canRetry || tentativa === GEMINI_MAX_RETRIES) {
         throw lastError;
@@ -416,11 +539,14 @@ async function askGemini(systemPrompt, mensagem) {
 }
 
 async function postEnviarMensagemController(body, req) {
-  console.log("Chegou")
   const { mensagem } = body;
 
   if (!mensagem || typeof mensagem !== "string" || !mensagem.trim()) {
-    throw { success: false, message: "Mensagem nao pode ser vazia.", campo: "mensagem" };
+    throw {
+      success: false,
+      message: "Mensagem nao pode ser vazia.",
+      campo: "mensagem",
+    };
   }
 
   // Busca lesoes do aluno pelo id que vem no JWT (decodificado pelo verifyJWT)
@@ -440,10 +566,15 @@ async function postEnviarMensagemController(body, req) {
   let geminiResponse;
   try {
     geminiResponse = await askGemini(systemPrompt, mensagem.trim());
+    console.log(geminiResponse)
   } catch (error) {
     const status = error.response?.status;
     const geminiMessage = error.response?.data?.error?.message;
-    console.error("[Gemini indisponivel]", status || error.message, geminiMessage || "");
+    console.error(
+      "[Gemini indisponivel]",
+      status || error.message,
+      geminiMessage || "",
+    );
 
     if (status === 429) {
       return {

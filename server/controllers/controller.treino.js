@@ -5,27 +5,60 @@ async function getListarTreinosController() {
   return treinos;
 }
 
-async function postCriarTreinoController(body) {
-  const { nome, descricao, duracaoMinutos } = body;
-  
-  if (!nome || !duracaoMinutos) {
-    throw { success: false, message: "Preencha todos os campos obrigatórios." };
+async function getTreinoPorIdController(body, params) {
+  const { id } = params;
+  const treino = await Treino.findById(id);
+
+  if (!treino) {
+    throw { success: false, message: "Treino não encontrado." };
   }
 
-  const novoTreino = new Treino({ nome, descricao, duracaoMinutos });
+  return treino;
+}
+
+async function postCriarTreinoController(body) {
+  const {
+    nome,
+    descricao,
+    duracaoMinutos,
+    dia = "A definir",
+    ultima = "Nunca realizado",
+    foto = null,
+    exercicios = [],
+  } = body;
+
+  const novoTreino = new Treino({
+    nome,
+    descricao,
+    duracaoMinutos,
+    dia,
+    ultima,
+    foto,
+    exercicios,
+  });
   const resultado = await novoTreino.save();
   return resultado;
 }
 
 async function putAtualizarTreinoController(body, params) {
   const { id } = params;
-  const { nome, descricao, duracaoMinutos } = body;
+  const { nome, descricao, duracaoMinutos, dia, ultima, foto, exercicios } =
+    body;
 
-  const treinoAtualizado = await Treino.findByIdAndUpdate(
-    id,
-    { nome, descricao, duracaoMinutos },
-    { new: true }
-  );
+  const updateData = {
+    nome,
+    descricao,
+    duracaoMinutos,
+  };
+
+  if (dia !== undefined) updateData.dia = dia;
+  if (ultima !== undefined) updateData.ultima = ultima;
+  if (foto !== undefined) updateData.foto = foto;
+  if (exercicios !== undefined) updateData.exercicios = exercicios;
+
+  const treinoAtualizado = await Treino.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
 
   if (!treinoAtualizado) {
     throw { success: false, message: "Treino não encontrado." };
@@ -37,7 +70,7 @@ async function putAtualizarTreinoController(body, params) {
 async function deleteRemoverTreinoController(body, params) {
   const { id } = params;
   const treinoDeletado = await Treino.findByIdAndDelete(id);
-  
+
   if (!treinoDeletado) {
     throw { success: false, message: "Treino não encontrado." };
   }
@@ -96,10 +129,11 @@ async function deleteRemoverExercicioController(body, params) {
 
 module.exports = {
   getListarTreinosController,
+  getTreinoPorIdController,
   postCriarTreinoController,
   putAtualizarTreinoController,
   deleteRemoverTreinoController,
   getListarExerciciosController,
   postAdicionarExercicioController,
-  deleteRemoverExercicioController
+  deleteRemoverExercicioController,
 };
