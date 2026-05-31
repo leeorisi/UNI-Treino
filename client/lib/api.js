@@ -1,12 +1,8 @@
 import axios from "axios";
-import { useConfigStore } from "../store/configStore";
 import { krip } from "./krip";
+import { useConfigStore } from "../store/configStore";
 import { queryClient } from "./queryClient";
 
-/**
- * Instância compartilhada do axios.
- * A cada requisição, pegamos a URL base e o token do configStore.
- */
 export const api = axios.create();
 
 // Alias (para reaproveitar código antigo que importava axiosInstance)
@@ -16,7 +12,10 @@ api.interceptors.request.use(
   (config) => {
     const { token } = useConfigStore.getState();
 
-    const baseURL = import.meta.env.VITE_URL_API_NODE;
+    const baseURL =
+      import.meta.env.VITE_NODE_URL ||
+      import.meta.env.VITE_URL_API_NODE ||
+      "http://localhost:3005";
 
     // BaseURL apenas do configStore
     if (baseURL) {

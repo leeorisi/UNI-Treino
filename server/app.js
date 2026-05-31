@@ -8,6 +8,7 @@ require("dotenv").config();
 const { verifyJWT } = require("./middleware/middleware.jwtoken");
 const accountRoutes = require("./routes/route.account");
 const chatRoutes = require("./routes/route.chat");
+const chatsRoutes = require("./routes/route.chats");
 const { connectDB } = require("./config/database");
 const { connectMailtap } = require("./models/model.mailer");
 const treinoRoutes = require("./routes/route.treino");
@@ -44,8 +45,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use("/v1/account", accountRoutes);
 app.use("/v1/mensagem", chatRoutes);
-app.use("/v1/treinos", treinoRoutes);
-// app.use("/v1/login", verifyJWT accountRoutes);
+app.use("/v1/chats", verifyJWT, chatsRoutes);
+app.use("/v1/treinos", verifyJWT, treinoRoutes);
+app.use("/v1/lesoes", verifyJWT, treinoRoutes);
 
 connectDB();
 

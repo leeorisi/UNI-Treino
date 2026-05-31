@@ -20,11 +20,13 @@ async function responseHandler(
   }
 
   try {
-    try {
-      req.user.sie = decrypt(req.user.sie);
-    } catch {
-      if (typeof req.user?.sie === "string" && req.user.sie.length > 5) {
-        throw { msg: "405", campo: "responseHandler", conteudo: "" };
+    if (req.user) {
+      try {
+        req.user.sie = decrypt(req.user.sie);
+      } catch {
+        if (typeof req.user?.sie === "string" && req.user.sie.length > 5) {
+          throw { msg: "405", campo: "responseHandler", conteudo: "" };
+        }
       }
     }
 

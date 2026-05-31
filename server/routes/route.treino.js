@@ -6,31 +6,71 @@ const { verifyJWT } = require("../middleware/middleware.jwtoken");
 
 // Coloque o verifyJWT AQUI nas suas rotas originais
 router.get("/", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.getListarTreinosController, "result");
+  responseHandler(req, res, controller.getListarTreinosController, "result");
 });
 
 router.post("/", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.postCriarTreinoController, "result");
+  responseHandler(req, res, controller.postCriarTreinoController, "result");
 });
 
 router.put("/:id", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.putAtualizarTreinoController, "result", req.params);
+  responseHandler(
+    req,
+    res,
+    controller.putAtualizarTreinoController,
+    "result",
+    req.params,
+  );
 });
 
 router.delete("/:id", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.deleteRemoverTreinoController, "result", req.params);
+  responseHandler(
+    req,
+    res,
+    controller.deleteRemoverTreinoController,
+    "result",
+    req.params,
+  );
+});
+
+router.get("/:id", verifyJWT, (req, res) => {
+  responseHandler(
+    req,
+    res,
+    controller.getTreinoPorIdController,
+    "result",
+    req.params,
+  );
 });
 
 router.get("/:id/exercicios", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.getListarExerciciosController, "result", req.params);
+  responseHandler(
+    req,
+    res,
+    controller.getListarExerciciosController,
+    "result",
+    req.params,
+  );
 });
 
 router.post("/:id/exercicios", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.postAdicionarExercicioController, "result", req.params);
+  responseHandler(
+    req,
+    res,
+    controller.postAdicionarExercicioController,
+    "result",
+    req.params,
+  );
 });
 
 router.delete("/:id/exercicios/:exercicioId", verifyJWT, (req, res) => {
-    responseHandler(req, res, controller.deleteRemoverExercicioController, "result", req.params);
+  responseHandler(
+    req,
+    res,
+    controller.deleteRemoverExercicioController,
+    "result",
+    req.params,
+  );
 });
 
 module.exports = router;

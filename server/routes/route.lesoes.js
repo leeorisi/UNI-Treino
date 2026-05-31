@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const responseHandler = require("../controllers/controller.responseHandler");
-const controller = require("../controllers/controller.account");
+const controller = require("../controllers/controller.lesoes");
 const { verifyJWT } = require("../middleware/middleware.jwtoken");
 
 /**
@@ -31,25 +31,39 @@ const { verifyJWT } = require("../middleware/middleware.jwtoken");
 //   responseHandler(req, res, controller.postTokenController, "Token", req);
 // });
 
-router.post("/login", (req, res) => {
-  responseHandler(req, res, controller.postLoginController, "result");
-});
-
-router.post("/register", (req, res) => {
-  responseHandler(req, res, controller.postRegisterController, "result");
-});
-
-router.post("/resetPassword/sendCode", (req, res) => {
+// ROTAS DE LESÕES (Protegidas pelo JWT)
+router.get("/lesoes", verifyJWT, (req, res) => {
+  // Passamos o req inteiro para o handler poder extrair o req.user
   responseHandler(
     req,
     res,
-    controller.postSendResetPasswordEmailController,
+    controller.getListarLesoesController,
     "result",
+    req.params,
+    req,
   );
 });
 
-router.post("/resetPassword", (req, res) => {
-  responseHandler(req, res, controller.postResetPasswordController, "result");
+router.post("/lesoes", verifyJWT, (req, res) => {
+  responseHandler(
+    req,
+    res,
+    controller.postAdicionarLesaoController,
+    "result",
+    req.params,
+    req,
+  );
+});
+
+router.delete("/lesoes/:index", verifyJWT, (req, res) => {
+  responseHandler(
+    req,
+    res,
+    controller.deleteRemoverLesaoController,
+    "result",
+    req.params,
+    req,
+  );
 });
 
 module.exports = router;

@@ -47,3 +47,4 @@ coverage
 tests
 jest.config.js
 query.log
+.env
