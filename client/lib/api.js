@@ -12,7 +12,10 @@ api.interceptors.request.use(
   (config) => {
     const { token } = useConfigStore.getState();
 
-    const baseURL = import.meta.env.VITE_NODE_URL;
+    const baseURL =
+      import.meta.env.VITE_NODE_URL ||
+      import.meta.env.VITE_URL_API_NODE ||
+      "http://localhost:3005";
 
     // BaseURL apenas do configStore
     if (baseURL) {

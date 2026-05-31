@@ -91,7 +91,7 @@ async function getListarExerciciosController(body, params) {
 
 async function postAdicionarExercicioController(body, params) {
   const { id } = params;
-  const { nome, series, repeticoes, carga, observacao } = body;
+  const { nome, series, repeticoes, carga, observacao, imagemUrl, videoUrl } = body;
 
   if (!nome || !series || !repeticoes) {
     throw { success: false, message: "Preencha todos os campos obrigatórios." };
@@ -102,7 +102,7 @@ async function postAdicionarExercicioController(body, params) {
     throw { success: false, message: "Treino não encontrado." };
   }
 
-  treino.exercicios.push({ nome, series, repeticoes, carga, observacao });
+  treino.exercicios.push({ nome, series, repeticoes, carga, observacao, imagemUrl, videoUrl });
   await treino.save();
 
   return treino.exercicios[treino.exercicios.length - 1];

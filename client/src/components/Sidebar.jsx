@@ -214,6 +214,9 @@ function Sidebar({
   const navigate = useNavigate();
 
   const [activeChats, setActiveChats] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const effectiveCollapsed = collapsed && !isHovered;
 
   useEffect(() => {
     let mounted = true;
@@ -236,7 +239,7 @@ function Sidebar({
       window.removeEventListener("chatCriado", carregarHistorico);
       window.removeEventListener("storage", carregarHistorico);
     };
-  }, [mobileOpen, collapsed]);
+  }, [mobileOpen, effectiveCollapsed]);
 
   function handleNewChat() {
     navigate("/novo-chat");
@@ -268,11 +271,12 @@ function Sidebar({
     />
   );
 
-  if (collapsed) {
+  if (effectiveCollapsed) {
     return (
       <aside
         className="sidebar-master-container sidebar-master-container--collapsed"
         aria-label="Menu recolhido"
+        onMouseEnter={() => setIsHovered(true)}
       >
         <div className="sidebar-collapsed-top-actions">
           <button
@@ -359,6 +363,7 @@ function Sidebar({
     <aside
       className="sidebar-master-container sidebar-master-container--expanded"
       aria-label="Menu lateral"
+      onMouseLeave={() => setIsHovered(false)}
     >
       {commonContent}
     </aside>

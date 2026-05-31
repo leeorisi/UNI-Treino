@@ -314,6 +314,21 @@ function ExecucaoTreino() {
               const infoSeries = estadoExercicios[ex.id] || [];
               const feitas = infoSeries.filter((s) => s.concluida).length;
               const total = ex.series;
+              const exKey = ex._id || ex.id || ex.nome;
+              const temMedia = ex.imagemUrl || ex.videoUrl;
+
+              // Converter YouTube URL para embed
+              let embedUrl = null;
+              if (ex.videoUrl) {
+                const ytMatch = ex.videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+                if (ytMatch) {
+                  embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
+                } else if (ex.videoUrl.includes("youtube.com/embed/")) {
+                  embedUrl = ex.videoUrl;
+                } else {
+                  embedUrl = ex.videoUrl;
+                }
+              }
 
               return (
                 <div
@@ -334,41 +349,168 @@ function ExecucaoTreino() {
                       alignItems: "center",
                     }}
                   >
-                    <div>
-                      <h3
-                        style={{
-                          margin: "0",
-                          fontSize: "1.2rem",
-                          color: "#0f172a",
-                        }}
-                      >
-                        {ex.nome}
-                      </h3>
-                      {ex.observacao && (
-                        <p
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      {/* Thumbnail do exercício */}
+                      {ex.imagemUrl && (
+                        <img
+                          src={ex.imagemUrl}
+                          alt={ex.nome}
                           style={{
-                            margin: "4px 0 0 0",
-                            fontSize: "0.85rem",
-                            color: "#64748b",
+                            width: "52px",
+                            height: "52px",
+                            borderRadius: "10px",
+                            objectFit: "cover",
+                            border: "1px solid #e2e8f0",
+                            flexShrink: 0,
+                          }}
+                        />
+                      )}
+                      <div>
+                        <h3
+                          style={{
+                            margin: "0",
+                            fontSize: "1.1rem",
+                            color: "#0f172a",
                           }}
                         >
-                          {ex.observacao}
-                        </p>
-                      )}
+                          {ex.nome}
+                        </h3>
+                        {ex.observacao && (
+                          <p
+                            style={{
+                              margin: "2px 0 0 0",
+                              fontSize: "0.8rem",
+                              color: "#64748b",
+                            }}
+                          >
+                            {ex.observacao}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        background: "#e2e8f0",
-                        padding: "4px 12px",
-                        borderRadius: "12px",
-                        fontWeight: "bold",
-                        fontSize: "0.9rem",
-                        color: "#334155",
-                      }}
-                    >
-                      Progresso: {feitas} / {total} séries
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      {temMedia && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const el = document.getElementById(`media-${exKey}`);
+                            if (el) {
+                              el.style.display = el.style.display === "none" ? "block" : "none";
+                            }
+                          }}
+                          style={{
+                            background: "#dbeafe",
+                            color: "#2563eb",
+                            border: "none",
+                            padding: "5px 10px",
+                            borderRadius: "6px",
+                            fontSize: "0.75rem",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          📸 Como fazer
+                        </button>
+                      )}
+                      <div
+                        style={{
+                          background: feitas === total ? "#bbf7d0" : "#e2e8f0",
+                          padding: "4px 12px",
+                          borderRadius: "12px",
+                          fontWeight: "bold",
+                          fontSize: "0.85rem",
+                          color: feitas === total ? "#166534" : "#334155",
+                        }}
+                      >
+                        {feitas}/{total} séries
+                      </div>
                     </div>
                   </div>
+
+                  {/* Mídia do exercício (oculta por padrão) */}
+                  {temMedia && (
+                    <div
+                      id={`media-${exKey}`}
+                      style={{
+                        display: "none",
+                        background: "#f8fafc",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: ex.imagemUrl && embedUrl ? "1fr 1fr" : "1fr",
+                          gap: "0",
+                        }}
+                      >
+                        {ex.imagemUrl && (
+                          <div style={{ borderRight: embedUrl ? "1px solid #e2e8f0" : "none" }}>
+                            <div
+                              style={{
+                                padding: "8px 12px",
+                                background: "#f1f5f9",
+                                fontSize: "0.75rem",
+                                fontWeight: "600",
+                                color: "#475569",
+                                borderBottom: "1px solid #e2e8f0",
+                              }}
+                            >
+                              📸 Foto do Exercício
+                            </div>
+                            <div style={{ padding: "8px", textAlign: "center" }}>
+                              <img
+                                src={ex.imagemUrl}
+                                alt={`Como fazer: ${ex.nome}`}
+                                style={{
+                                  maxWidth: "100%",
+                                  maxHeight: "250px",
+                                  objectFit: "contain",
+                                  borderRadius: "6px",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {embedUrl && (
+                          <div>
+                            <div
+                              style={{
+                                padding: "8px 12px",
+                                background: "#f1f5f9",
+                                fontSize: "0.75rem",
+                                fontWeight: "600",
+                                color: "#475569",
+                                borderBottom: "1px solid #e2e8f0",
+                              }}
+                            >
+                              🎬 Vídeo Demonstrativo
+                            </div>
+                            <div style={{ position: "relative", paddingTop: "56.25%" }}>
+                              <iframe
+                                src={embedUrl}
+                                title={`Vídeo: ${ex.nome}`}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: 0,
+                                  width: "100%",
+                                  height: "100%",
+                                  border: "none",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <div
                     style={{

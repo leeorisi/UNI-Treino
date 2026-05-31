@@ -6,6 +6,8 @@ const exercicioSchema = new mongoose.Schema({
   repeticoes: { type: Number, required: true },
   carga: { type: Number, required: false, default: 0 },
   observacao: { type: String, required: false, default: "" },
+  imagemUrl: { type: String, required: false, default: null },
+  videoUrl: { type: String, required: false, default: null },
 });
 
 const treinoSchema = new mongoose.Schema(

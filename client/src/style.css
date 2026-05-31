@@ -2418,6 +2418,8 @@ button {
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  transition: width 0.35s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  overflow-x: hidden;
 }
 
 .sidebar-header-row {
@@ -2594,7 +2596,7 @@ button {
   background-color: var(--bg-hover);
 }
 
-/* ── Customizações para Sidebar Colapsada ── */
+/* ── Customizações para Sidebar Colapsada e Expandida ── */
 
 .sidebar-master-container--collapsed {
   width: var(--sidebar-collapsed-w) !important;
@@ -2605,6 +2607,11 @@ button {
   justify-content: space-between;
   padding: 12px 0;
   box-sizing: border-box;
+}
+
+.sidebar-master-container--expanded {
+  width: 280px !important;
+  transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
 /* Container de botões superiores */
