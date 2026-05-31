@@ -16,6 +16,7 @@ import Perfil from "./pages/Perfil";
 import CrudTreino from "./pages/CrudTreino";
 import CrudLesoes from "./pages/CrudLesoes";
 import ExecucaoTreino from "./pages/ExecucaoTreino";
+import GestaoUsuarios from './pages/GestaoUsuarios';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="gerencia-treino" element={<CrudTreino />} />
               <Route path="gerencia-lesoes" element={<CrudLesoes />} />
               <Route path="execucao-treino/:id" element={<ExecucaoTreino />} />
+              <Route path="/admin/usuarios" element={<GestaoUsuarios />} />
             </Route>
           </Routes>
         </BrowserRouter>

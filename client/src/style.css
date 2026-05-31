@@ -1468,8 +1468,9 @@ button {
 
 .crud-topbar {
   display: flex;
+  width: 100%;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 12px;
 }
 
@@ -1493,7 +1494,7 @@ button {
   color: var(--text-primary);
   background: var(--bg);
   outline: none;
-  width: 200px;
+  width: 300px;
   transition: border-color 0.15s;
 }
 .crud-search:focus {

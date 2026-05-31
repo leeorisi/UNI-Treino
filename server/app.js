@@ -12,6 +12,7 @@ const chatsRoutes = require("./routes/route.chats");
 const { connectDB } = require("./config/database");
 const { connectMailtap } = require("./models/model.mailer");
 const treinoRoutes = require("./routes/route.treino");
+const adminRoutes = require("./routes/route.admin");
 
 const app = express();
 const porta = process.env.NODE_API_PORT;
@@ -48,6 +49,7 @@ app.use("/v1/mensagem", chatRoutes);
 app.use("/v1/chats", verifyJWT, chatsRoutes);
 app.use("/v1/treinos", verifyJWT, treinoRoutes);
 app.use("/v1/lesoes", verifyJWT, treinoRoutes);
+app.use("/v1/admin", adminRoutes);
 
 connectDB();
 

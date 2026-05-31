@@ -5,6 +5,7 @@ const accountSchema = new mongoose.Schema({
   nome: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   senha: { type: String, required: true },
+  role: { type: String, enum: ['admin', 'aluno'], default: 'aluno' },
   lesoes: { type: [String], default: [] },
   tokenRedefinicaoSenha: { type: String, required: false, default: null },
   validadeTokenRedefinicaoSenha: { type: Date, required: false, default: null },

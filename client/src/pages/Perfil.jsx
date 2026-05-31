@@ -134,6 +134,12 @@ function Perfil() {
             </div>
 
             <div className="perfil-acoes">
+              {user?.role === "admin" && (
+              <button
+                className="perfil-acao-link"
+                onClick={() => navigate("/admin/usuarios")}
+              >Painel Admin</button>
+              )} 
               <button
                 className="perfil-acao-link"
                 onClick={() => navigate("/recuperar-senha")}

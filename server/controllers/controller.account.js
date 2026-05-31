@@ -48,9 +48,13 @@ async function postLoginController(body) {
     id: String(user._id),
     email: user.email,
     nome: user.nome,
+    role: user.role
   });
 
-  return { success: true, accessToken };
+  return { success: true, accessToken, id: String(user._id),
+    email: user.email,
+    nome: user.nome,
+    role: user.role };
 }
 
 async function postRegisterController(req) {
